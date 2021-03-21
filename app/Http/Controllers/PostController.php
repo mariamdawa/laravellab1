@@ -3,36 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Models\User;
 
 class PostController extends Controller
 {
-    private $_allPosts=[
-        ['id' => 1, 'title' => 'Learn Php', 'posted_by' => 'Ahmed', 'created_at' => '2018-04-10','description'=>'With supporting text below as a natural lead-in additional context.','email'=>'ahmed@gmail.com'],
-        ['id' => 2, 'title' => 'Solid Principles', 'posted_by' => 'Mohamed', 'created_at' => '2018-04-12','description'=>'With supporting text below as a natural lead-in additional context.','email'=>'mohamed@gmail.com'],
-        ['id' => 3, 'title' => 'Design Patters', 'posted_by' => 'Ali', 'created_at' => '2018-04-12','description'=>'With supporting text below as a natural lead-in additional context.','email'=>'sli@gmail.com'],
-    ];
+    
     function index(){
-        
-        return view('posts.index',['posts'=>$this->_allPosts]);
+        $allPosts=Post::all();
+        return view('posts.index',['posts'=>$allPosts]);
     }
 
     function show($postID){
-        $indexOfPost=array_search($postID, array_column($this->_allPosts, 'id'));
-        return view('posts.show',['post'=>$this->_allPosts[$indexOfPost]]);
+        $post=Post::find($postID);
+        $user=User::find($post->id);
+        return view('posts.show',['post'=>$post,'user'=>$user]);
     }
     public function create()
     {
-        return view('posts.create');
+        return view('posts.create',['users'=>User::all()]);
     }
 
     public function edit($postID)
     {
-        $indexOfPost=array_search($postID, array_column($this->_allPosts, 'id'));
-        return view('posts.edit',['post'=>$this->_allPosts[$indexOfPost]]);
+        $post=Post::find($postID);
+        return view('posts.edit',['post'=>$post,'users'=>User::all()]);
     }
-    public function store()
+    public function store(Request $request)
     {
-
+       
+        $requestData = $request->all();
+        Post::create($requestData);
+        return redirect()->route('posts.index');
+    }
+    public function update(Post $post, Request $request){
+        $requestData = $request->all();
+        $post=Post::find($requestData['id']);
+        $post->description=$requestData['description'];
+        $post->title=$requestData['title'];
+        $post->user_id=$requestData['user_id'];
+        $post->save();
+        return redirect()->route('posts.index');
+    }
+    public function destroy(Post $post) {
+        $post->delete();
         return redirect()->route('posts.index');
     }
 
