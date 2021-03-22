@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\User;
 
@@ -29,14 +30,14 @@ class PostController extends Controller
         $post=Post::find($postID);
         return view('posts.edit',['post'=>$post,'users'=>User::all()]);
     }
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
        
         $requestData = $request->all();
         Post::create($requestData);
         return redirect()->route('posts.index');
     }
-    public function update(Post $post, Request $request){
+    public function update(Post $post, StorePostRequest $request){
         $requestData = $request->all();
         $post=Post::find($requestData['id']);
         $post->description=$requestData['description'];
