@@ -26,9 +26,9 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'=>['required','min:3','unique:posts,title'],
+            'title'=>['required','min:3','unique:posts,title,'.$this->post['id']],
             'description'=>['required','min:10'],
-            'user_id'=>['required']
+            'user_id'=>['required','exists:users,id']
             //
         ];
     }
@@ -40,7 +40,8 @@ class StorePostRequest extends FormRequest
           'title.unique'=>'Title already exists, Enter another title.',
           'description.required'=>'Please Enter a description.',
           'description.min'=>'Description must be at least 10 characters.',
-            'user.required'=>'You must choose a user from the dropdown.'
+            'user_id.required'=>'You must choose a user from the dropdown.',
+            'user_id.exists'=>'User Does not exist, choose a user from dropdown menu.'
         ];
     }
 }
