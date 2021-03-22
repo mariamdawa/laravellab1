@@ -7,9 +7,9 @@
 @section('content')
     <a href="{{route('posts.create')}}" class="btn btn-success" style="margin-left: 70%;margin-bottom:10px"> Create Post</a>
 
-    <table class="table">
-        <thead>
-        <tr>
+    <table class="table" style="margin-left: 50px; margin-right:50px;" >
+        <thead >
+        <tr >
             <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Posted By</th>
@@ -20,7 +20,7 @@
         <tbody>
         @foreach($posts as $post)
         <tr>
-            <th scope="row">{{ $post->id }}</th>
+            <th scope="row" >{{ $post->id }}</th>
             <td>{{ $post->title }}</td>
             <td>{{ $post->user->name }}</td>
             <td>{{ \Carbon\Carbon::parse($post->created_at)->format('Y-m-d') }}</td>
