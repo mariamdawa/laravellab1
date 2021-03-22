@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\User;
+use \Cviebrock\EloquentSluggable\Services\SlugService;
 
 class PostController extends Controller
 {
@@ -34,7 +35,8 @@ class PostController extends Controller
     {
        
         $requestData = $request->all();
-        Post::create($requestData);
+        $post=Post::create($requestData);
+        $post->slug=SlugService::createSlug(Post::class,'slug',$requestData['title']);
         return redirect()->route('posts.index');
     }
     public function update(Post $post, StorePostRequest $request){
@@ -42,6 +44,7 @@ class PostController extends Controller
         $post=Post::find($requestData['id']);
         $post->description=$requestData['description'];
         $post->title=$requestData['title'];
+        $post->slug=SlugService::createSlug(Post::class,'slug',$requestData['title']);
         $post->user_id=$requestData['user_id'];
         $post->save();
         return redirect()->route('posts.index');
